@@ -1,8 +1,12 @@
 #![no_std]
 #![no_main]
 
+mod uefi;
+
 use core::ffi::c_void;
 use core::panic::PanicInfo;
+
+use uefi::proto::simple_text_output::*;
 
 #[repr(C)]
 pub struct EfiTableHeader {
@@ -15,13 +19,6 @@ pub struct EfiTableHeader {
 
 
 #[repr(C)]
-pub struct EfiSimpleTextOutputProtocol {
-    pub reset: unsafe extern "win64" fn(this: &EfiSimpleTextOutputProtocol, extended: bool) -> EfiStatus,
-    pub output_string: unsafe extern "win64" fn(this: &EfiSimpleTextOutputProtocol, string: *const u16) -> EfiStatus,
-    // TBD
-}
-
-#[repr(C)]
 pub struct EfiSystemTable {
     pub header: EfiTableHeader,
     pub firmware_vendor: *const u16,
@@ -29,7 +26,7 @@ pub struct EfiSystemTable {
     pub console_in_handle: EfiHandle,
     _con_in: usize,
     pub console_out_handle: EfiHandle,
-    pub con_out: *mut EfiSimpleTextOutputProtocol,
+    pub con_out: *mut SimpleTextOutput,
     pub standard_error_handle: EfiHandle,
     _std_err: usize,// TBD
 }
@@ -45,7 +42,7 @@ pub enum EfiStatus {
 
 #[no_mangle]
 pub extern "C" fn efi_main(image: EfiHandle, st: EfiSystemTable) -> EfiStatus {
-    let stdout: &mut EfiSimpleTextOutputProtocol = unsafe { &mut *(st.con_out) };
+    let stdout: &mut SimpleTextOutput = unsafe { &mut *(st.con_out) };
     let string = "hello world".as_bytes();
     let mut buf = [0u16; 32];
 
@@ -54,8 +51,8 @@ pub extern "C" fn efi_main(image: EfiHandle, st: EfiSystemTable) -> EfiStatus {
     }
 
     unsafe {
-        (stdout.reset)(stdout, false);
-        (stdout.output_string)(stdout, buf.as_ptr());
+        stdout.reset(false);
+        stdout.output_string(&buf);
     }
 
     loop {}
