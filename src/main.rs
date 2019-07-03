@@ -7,6 +7,7 @@ use core::ffi::c_void;
 use core::panic::PanicInfo;
 
 use uefi::proto::simple_text_output::*;
+use uefi::Status;
 
 #[repr(C)]
 pub struct EfiTableHeader {
@@ -35,29 +36,20 @@ pub struct EfiSystemTable {
 #[repr(transparent)]
 pub struct EfiHandle(*mut c_void);
 
-#[repr(usize)]
-pub enum EfiStatus {
-    SUCCESS = 0,
-}
-
 #[no_mangle]
-pub extern "C" fn efi_main(image: EfiHandle, st: EfiSystemTable) -> EfiStatus {
+pub extern "C" fn efi_main(_image: EfiHandle, st: EfiSystemTable) -> Status {
     let stdout: &mut SimpleTextOutput = unsafe { &mut *(st.con_out) };
-    let string = "hello world".as_bytes();
+
     let mut buf = [0u16; 32];
 
-    for i in 0..string.len() {
-        buf[i] = string[i] as u16;
+    for (i, c) in "Hello World!\n".encode_utf16().enumerate() {
+        buf[i] = c;
     }
 
-    unsafe {
-        stdout.reset(false);
-        stdout.output_string(&buf);
-    }
+    stdout.reset(false);
+    stdout.output_string(&buf);
 
     loop {}
-
-    EfiStatus::SUCCESS
 }
 
 #[panic_handler]
