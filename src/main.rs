@@ -18,7 +18,6 @@ pub struct EfiTableHeader {
     _reserved: u32,
 }
 
-
 #[repr(C)]
 pub struct EfiSystemTable {
     pub header: EfiTableHeader,
@@ -29,7 +28,7 @@ pub struct EfiSystemTable {
     pub console_out_handle: EfiHandle,
     pub con_out: *mut SimpleTextOutput,
     pub standard_error_handle: EfiHandle,
-    _std_err: usize,// TBD
+    _std_err: usize, // TBD
 }
 
 #[derive(Clone, Copy)]
