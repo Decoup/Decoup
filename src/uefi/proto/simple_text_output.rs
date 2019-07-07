@@ -11,7 +11,7 @@ impl SimpleTextOutput {
         (self.reset)(self, extended)
     }
 
-    pub fn output_string(&mut self, string: &[u16]) -> Status {
-        (self.output_string)(self, string.as_ptr())
+    pub fn output_string(&mut self, string: *const u16) -> Status {
+        (self.output_string)(self, string)
     }
 }

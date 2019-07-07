@@ -10,14 +10,8 @@ use uefi::system_table::*;
 
 #[no_mangle]
 pub extern "C" fn efi_main(_image: Handle, system_table: SystemTable) -> Status {
-    let mut buf = [0u16; 32];
-
-    for (i, c) in "Hello World!\n".encode_utf16().enumerate() {
-        buf[i] = c;
-    }
-
     system_table.con_out().reset(false);
-    system_table.con_out().output_string(&buf);
+    system_table.con_out().output_string(system_table.firmware_vendor());
 
     loop {}
 }
