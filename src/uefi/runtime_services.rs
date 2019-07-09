@@ -21,7 +21,7 @@ pub struct RuntimeServices {
     _set_variable: usize,
 
     _get_next_high_monotonic_count: usize,
-    reset_system: extern "win64" fn(reset_type: ResetType, status: Status, data_size: usize, data_ptr: usize),
+    reset_system: extern "win64" fn(reset_type: ResetType, status: Status, data_size: usize, data_ptr: usize) -> !,
 
     _update_capsule: usize,
     _query_capsule_capabilities: usize,
@@ -36,7 +36,7 @@ impl Table for RuntimeServices {
 }
 
 impl RuntimeServices {
-    pub fn reset_system(&mut self, reset_type: ResetType, status: Status) {
+    pub fn reset_system(&mut self, reset_type: ResetType, status: Status) -> ! {
         (self.reset_system)(reset_type, status, 0, 0)
     }
 }

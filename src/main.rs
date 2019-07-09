@@ -18,7 +18,6 @@ pub extern "C" fn efi_main(_image: Handle, system_table: SystemTable) -> Status 
     system_table.con_out().output_string(new_line);
 
     system_table.runtime_services().reset_system(ResetType::Shutdown, Status::SUCCESS);
-    Status::SUCCESS
 }
 
 #[panic_handler]
