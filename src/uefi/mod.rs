@@ -1,7 +1,9 @@
 pub mod image;
 pub mod proto;
 pub mod system_table;
-pub mod table_header;
+pub mod table;
+pub mod boot_services;
+pub mod runtime_services;
 
 use core::ffi::c_void;
 

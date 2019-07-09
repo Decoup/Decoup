@@ -1,3 +1,4 @@
+#[derive(Clone, Copy)]
 #[repr(C)]
 pub struct TableHeader {
     signature: u64,
@@ -23,4 +24,8 @@ impl TableHeader {
     pub fn crc32(&self) -> u32 {
         self.crc32
     }
+}
+
+pub trait Table {
+    fn header(&self) -> TableHeader;
 }
