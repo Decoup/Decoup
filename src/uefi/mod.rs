@@ -9,7 +9,7 @@ use core::ffi::c_void;
 
 #[repr(usize)]
 pub enum Status {
-    SUCCESS = 0,
+    Success = 0,
 }
 
 #[derive(Clone, Copy)]
